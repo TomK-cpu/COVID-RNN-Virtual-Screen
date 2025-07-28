@@ -82,7 +82,7 @@
         "parameters": {}
       },
       {
-        "name": "S_Sim",
+        "name": "S4_Sim",
         "weight": 1.0,
         "modifier": "lin_thresh",
         "parameters": {
