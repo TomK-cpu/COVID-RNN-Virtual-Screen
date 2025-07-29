@@ -1,0 +1,98 @@
+{
+  "task": "Deco_hop",
+  "output_dir": "./",
+  "load_from_previous": false,
+  "logging": false,
+  "monitor_app": false,
+  "diversity_filter": {
+    "run": true
+  },
+  "filters": [
+    {
+      "name": "SubstructureMatch",
+      "parameters": {
+        "prefix": "F1",
+        "smarts": [
+          "[*]C1C(C(O)=O)CN(C([*])=O)C1"
+        ],
+        "n_jobs": 1,
+        "method": "any"
+      }
+    }
+  ],
+  "scoring_functions": [
+    {
+      "name": "SubstructureMatch",
+      "run": true,
+      "parameters": {
+        "prefix": "S1",
+        "smarts": [
+          "[*]C1C(C(O)=O)CN(C([*])=O)C1"
+        ],
+        "n_jobs": 1,
+        "method": "any"
+      }
+    },
+    {
+      "name": "SubstructureMatch",
+      "run": true,
+      "parameters": {
+        "prefix": "S2",
+        "smarts": [
+          "C1:C:C:C(C2CCN(C3:C:C:N:C:C:3)C2):C:C:1"
+        ],
+        "n_jobs": 1,
+        "method": "any"
+      }
+    },
+    {
+      "name": "MolecularSimilarity",
+      "run": true,
+      "parameters": {
+        "prefix": "S3",
+        "ref_smiles": [
+          "OCC1C(C2=CC(F)=CC=C2)CN(C3=CC(C)=NC=C3C#N)C1",
+          "OC1C(C2=CC=CC=C2)CN(C3=CC(C)=NC=C3C#N)C1",
+          "N#CC1=CC(C)=C(CC)N=C1N2CC(CO)C(C3=CC=CC=C3)C2",
+          "N#CC1=CN=CC=C1N2CC(C(OC)=O)C(C3=CC(F)=CC=C3)C2",
+          "OC(C1C(C2=CC=CC=C2)CN(C(C)=O)C1)=O",
+          "OC(C1C(C2=CC=CC(OC)=C2)CN(C(C3=NC(N4C=NC=N4)=CC=C3)=O)C1)=O",
+          "OC(C1C(C2=CC=CC(OC)=C2)CN(C(C3=CC(OCCO4)=C4C=C3)=O)C1)=O"
+        ],
+        "fp": "PHCO",
+        "bits": 1024,
+        "similarity_measure": "Tanimoto",
+        "method": "mean",
+        "n_jobs": 1
+      }
+    }
+  ],
+  "scoring": {
+    "method": "amean",
+    "metrics": [
+      {
+        "name": "S1_substruct_match",
+        "weight": 5.0,
+        "modifier": "raw",
+        "parameters": {}
+      }, 
+      {
+        "name": "S2_substruct_match",
+        "weight": 5.0,
+        "modifier": "raw",
+        "parameters": {}
+      },
+      {
+        "name": "S3_Sim",
+        "weight": 1.0,
+        "modifier": "lin_thresh",
+        "parameters": {
+          "objective": "maximize",
+          "upper": 0.75,
+          "lower": 0.0,
+          "buffer": 0.75
+        }
+      }
+    ]
+  }
+}
